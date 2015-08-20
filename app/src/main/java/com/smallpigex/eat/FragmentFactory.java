@@ -9,8 +9,7 @@ public class FragmentFactory {
     public static Fragment newInstance(int position) {
         if(position == 0) {
             return new LocationFragment();
-        } else {
-            return null;
         }
+        return null;
     }
 }

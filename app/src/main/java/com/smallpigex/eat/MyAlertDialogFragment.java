@@ -11,6 +11,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 
 /**
@@ -22,35 +23,43 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class MyAlertDialogFragment extends DialogFragment {
+    public static String TITLE = "dialogTitle";
+    private String value = "";
     public static MyAlertDialogFragment newInstance(int title) {
         MyAlertDialogFragment frag = new MyAlertDialogFragment();
+
         Bundle args = new Bundle();
-        args.putInt("title", title);
+        args.putInt(TITLE, title);
         frag.setArguments(args);
         return frag;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        int title = getArguments().getInt("title");
-
-        return new AlertDialog.Builder(getActivity())
- //               .setIcon(R.drawable.alert_dialog_icon)
-                .setTitle(title)
-                .setPositiveButton(R.string.alert_dialog_ok,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                ((MainActivity)getActivity()).doPositiveClick();
-                            }
+        int title = getArguments().getInt(TITLE);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.fragment_my_alert_dialog, null);
+        alertDialogBuilder.setView(view);
+        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setPositiveButton(R.string.alert_dialog_ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        if (getDialog() != null) {
+                            EditText editText = (EditText) getDialog().findViewById(R.id.editText);
+                            value = editText.getText().toString();
                         }
-                )
-                .setNegativeButton(R.string.alert_dialog_cancel,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                ((MainActivity)getActivity()).doNegativeClick();
-                            }
-                        }
-                )
-                .create();
+                        ((MainActivity) getActivity()).doPositiveClick(value);
+                    }
+                }
+        );
+        alertDialogBuilder.setNegativeButton(R.string.alert_dialog_cancel,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        ((MainActivity) getActivity()).doNegativeClick();
+                    }
+                }
+        );
+        return alertDialogBuilder.create();
     }
 }

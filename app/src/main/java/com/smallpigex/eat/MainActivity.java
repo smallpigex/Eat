@@ -1,30 +1,28 @@
 package com.smallpigex.eat;
 
-import android.app.Activity;
-import android.app.DialogFragment;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
+
+
+import com.smallpigex.eat.com.eating.util.Consts;
+import com.smallpigex.eat.com.whatwouldyoulike.model.Model;
+import com.smallpigex.eat.com.whatwouldyoulike.model.Restaurant;
 
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, View.OnClickListener {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, LocationFragment.OnFragmentInteractionListener, RestaurantFragment.OnFragmentInteractionListener, AddRestaurantFragment.SaveRestaurantInformation {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
+    public static Model model;
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
@@ -34,7 +32,9 @@ public class MainActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        if (model == null) {
+            model = new Model(getSharedPreferences(Consts.PREFS_NAME, 0));
+        }
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -43,24 +43,23 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+    }
 
-        Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(this);
+    @Override
+    public void onBackPressed() {
+        int count = getFragmentManager().getBackStackEntryCount();
+        if(count == 0) {
+            super.onBackPressed();
+        } else {
+            getFragmentManager().popBackStack();
+        }
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
         android.app.Fragment fragment = FragmentFactory.newInstance(position);
-        if(fragment == null) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                    .commit();
-        }
-        getFragmentManager().beginTransaction()
-                .replace(R.id.container, fragment)
-                .commit();
+        addFragment(fragment, Consts.LOCATION_FRAGMENT);
     }
 
     public void onSectionAttached(int number) {
@@ -113,15 +112,12 @@ public class MainActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-    void showDialog() {
-        DialogFragment newFragment = MyAlertDialogFragment.newInstance(
-                R.string.dialog_title);
-        newFragment.show(getFragmentManager(), "dialog");
-    }
-
-    public void doPositiveClick() {
+    public void doPositiveClick(String location) {
         // Do stuff here.
-        Log.i("FragmentAlertDialog", "Positive click!");
+        model.saveLocation(location);
+        android.app.Fragment locationFragment = getFragmentManager().findFragmentByTag(Consts.LOCATION_FRAGMENT);
+        locationFragment.onResume();
+        Log.i("Location Fragment", locationFragment.toString());
     }
 
     public void doNegativeClick() {
@@ -130,48 +126,29 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
-    public void onClick(View v) {
-        showDialog();
+    public void onFragmentInteraction(String id) {
+        Log.i("click Item ", id);
+        //new restaurant list page
+        android.app.Fragment restaurantFragment = RestaurantFragment.newInstance(id);
+        addFragment(restaurantFragment, Consts.RESTAURANT_FRAGMENT);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
-        }
+    @Override
+    public void showAddRestaurantFragment(String location) {
+        android.app.Fragment addRestaurantFragment = AddRestaurantFragment.newInstance(location);
+        addFragment(addRestaurantFragment, Consts.ADD_RESTAURANT_FRAGMENT);
     }
 
+    @Override
+    public void saveRestaurantInformation(Restaurant restaurant) {
+        model.saveRestaurant(restaurant);
+        getFragmentManager().popBackStackImmediate();
+    }
+
+    private void addFragment(android.app.Fragment fragment, String fragmentTag) {
+        android.app.FragmentTransaction fragmentTransaction= getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.container, fragment, fragmentTag);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
 }

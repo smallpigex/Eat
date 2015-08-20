@@ -7,21 +7,22 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.smallpigex.eat.com.eating.util.Consts;
+import com.smallpigex.eat.com.whatwouldyoulike.model.Restaurant;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import  java.util.Date;
-import java.text.SimpleDateFormat;
 
 
 /**
@@ -35,17 +36,18 @@ import java.text.SimpleDateFormat;
 public class AddRestaurantFragment extends Fragment implements View.OnClickListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String LOCATION = "location";
 
     private static final int REQUEST_TAKE_CODE = 1;
     private Button takePhotoButton;
+    private Button saveRestaurantButton;
+    private TextView locationView;
     private ImageView imageView;
     private String mCurrentPhotoPath;
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String mLocation;
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -58,11 +60,10 @@ public class AddRestaurantFragment extends Fragment implements View.OnClickListe
      * @return A new instance of fragment AddRestaurantFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddRestaurantFragment newInstance(String param1, String param2) {
+    public static AddRestaurantFragment newInstance(String location) {
         AddRestaurantFragment fragment = new AddRestaurantFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(LOCATION, location);
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,8 +76,7 @@ public class AddRestaurantFragment extends Fragment implements View.OnClickListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mLocation = getArguments().getString(LOCATION);
         }
 
     }
@@ -86,9 +86,13 @@ public class AddRestaurantFragment extends Fragment implements View.OnClickListe
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_restaurant, container, false);
-        takePhotoButton = (Button) view.findViewById(R.id.take_photo);
+        locationView = (TextView) view.findViewById(R.id.locationTextView);
+        locationView.setText(mLocation);
+        takePhotoButton = (Button) view.findViewById(R.id.takePhoto);
         takePhotoButton.setOnClickListener(this);
-        imageView = (ImageView) view.findViewById(R.id.photoView);
+        saveRestaurantButton = (Button) view.findViewById(R.id.saveRestaurant);
+        saveRestaurantButton.setOnClickListener(this);
+        imageView = (ImageView) view.findViewById(R.id.restaurantPhotoView);
         return view;
     }
 
@@ -118,6 +122,17 @@ public class AddRestaurantFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        int buttonId = v.getId();
+        if(buttonId == R.id.takePhoto) {
+            takePhotoCommand();
+        } else if(buttonId == R.id.saveRestaurant) {
+            //save restaurant data;
+            saveRestaurantInformationCommand();
+        }
+
+    }
+
+    private void takePhotoCommand() {
         Intent takePictureIntent = new Intent();
         takePictureIntent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -126,8 +141,9 @@ public class AddRestaurantFragment extends Fragment implements View.OnClickListe
             try {
                 photoFile = MainActivity.model.createImageFile();
                 mCurrentPhotoPath = photoFile.getAbsolutePath();
+                Log.i(Consts.LOG_TAG, "The Path of Photo is " + mCurrentPhotoPath);
             } catch (IOException ex) {
-                // Error occurred while creating the File
+                Log.d(Consts.EXCEPTION_TAG, "IOException " + ex.getMessage());
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
@@ -136,7 +152,30 @@ public class AddRestaurantFragment extends Fragment implements View.OnClickListe
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_CODE);
             }
         }
+    }
 
+    private void saveRestaurantInformationCommand() {
+        TextView restaurantView = (EditText)getView().findViewById(R.id.restaurantName);
+        TextView AddressView = (EditText)getView().findViewById(R.id.restaurantAddress);
+        TextView commentView = (EditText)getView().findViewById(R.id.restaurantComment);
+
+        String restaurantName = restaurantView.getText().toString();
+        String restaurantAddress = AddressView.getText().toString();
+        String restaurantComment = commentView.getText().toString();
+
+        Restaurant restaurant = new Restaurant();
+        restaurant.setLocation(mLocation);
+        restaurant.setRestaurantName(restaurantName);
+        restaurant.setRestaurantAddress(restaurantAddress);
+        restaurant.setRestaurantComment(restaurantComment);
+        if(!mCurrentPhotoPath.isEmpty()) {
+            restaurant.setRestaurantPhotoPath(mCurrentPhotoPath);
+        }
+        ((MainActivity) getActivity()).saveRestaurantInformation(restaurant);
+    }
+
+    public interface SaveRestaurantInformation {
+        public void saveRestaurantInformation(Restaurant restaurant);
     }
 
     @Override
@@ -145,8 +184,16 @@ public class AddRestaurantFragment extends Fragment implements View.OnClickListe
         if(requestCode == REQUEST_TAKE_CODE) {
             if(resultCode == getActivity().RESULT_OK) {
                 File file = new File(mCurrentPhotoPath);
-                Uri uri = Uri.fromFile(file);
-                Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                final int REQUIRED_SIZE = 200;
+                int scale = 1;
+                while (options.outWidth / scale / 2 >= REQUIRED_SIZE
+                        && options.outHeight / scale / 2 >= REQUIRED_SIZE)
+                    scale *= 2;
+                options.inSampleSize = scale;
+                options.inJustDecodeBounds = false;
+                Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, options);
                 imageView.setImageBitmap(bitmap);
             } else if(resultCode == getActivity().RESULT_CANCELED) {
                 Toast.makeText(getActivity(), "User cancel that take a photo",

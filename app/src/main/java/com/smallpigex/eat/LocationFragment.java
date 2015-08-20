@@ -1,19 +1,25 @@
 package com.smallpigex.eat;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
 
+import com.smallpigex.eat.com.whatwouldyoulike.model.Location;
 import com.smallpigex.eat.dummy.DummyContent;
+
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -24,7 +30,7 @@ import com.smallpigex.eat.dummy.DummyContent;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class LocationFragment extends Fragment implements AbsListView.OnItemClickListener {
+public class LocationFragment extends Fragment implements AbsListView.OnItemClickListener, View.OnClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,7 +40,7 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private List<Location> locations;
     private OnFragmentInteractionListener mListener;
 
     /**
@@ -73,10 +79,10 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
+        locations = MainActivity.model.getAllLocation();
         // TODO: Change Adapter to display your content
-        mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
+        mAdapter = new ArrayAdapter<Location>(getActivity(),
+                R.layout.fragment_location_list, android.R.id.text1, locations);
     }
 
     @Override
@@ -91,6 +97,8 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
 
+        Button button = (Button) view.findViewById(R.id.addLocation);
+        button.setOnClickListener(this);
         return view;
     }
 
@@ -98,7 +106,7 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-           // mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -112,11 +120,22 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
     }
 
     @Override
+    public void onResume() {
+        locations = MainActivity.model.getAllLocation();
+        // TODO: Change Adapter to display your content
+        mAdapter = new ArrayAdapter<Location>(getActivity(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, locations);
+        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+        super.onResume();
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-          //  mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+            Log.i("Click location ", locations.get(position).getLocationName());
+           mListener.onFragmentInteraction(locations.get(position).getLocationName());
         }
     }
 
@@ -131,6 +150,17 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
         if (emptyView instanceof TextView) {
             ((TextView) emptyView).setText(emptyText);
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        showDialog();
+    }
+
+    private void showDialog() {
+        DialogFragment newFragment = MyAlertDialogFragment.newInstance(
+                R.string.create_new_location);
+        newFragment.show(getFragmentManager(), "CreateNewLocation");
     }
 
     /**

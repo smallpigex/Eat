@@ -4,8 +4,14 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedHashTreeMap;
+import com.google.gson.reflect.TypeToken;
+import com.smallpigex.eat.com.eating.util.Consts;
+
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,39 +38,55 @@ public class Model {
         storageDir = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
         imageFolderPath = storageDir.getAbsolutePath() + "/" + IMAGE_FOLDER;
+
         createPhotoFolder();
     }
 
     private void createPhotoFolder() {
-        for(File childFile : storageDir.listFiles()) {
-            if(childFile.getName().equals(IMAGE_FOLDER)) {
+       /* for (File childFile : storageDir.listFiles()) {
+            if (childFile.getName().equals(IMAGE_FOLDER)) {
                 return;
             }
-        }
+        }*/
         File imageFolder = new File(imageFolderPath);
-        imageFolder.mkdir();
+        if(!imageFolder.exists()) {
+            imageFolder.mkdir();
+            Log.i(Consts.LOG_TAG, "It create a folder of image and path is " + imageFolderPath);
+        } else {
+            Log.i(Consts.LOG_TAG, "The folder of image is existing and path is " + imageFolderPath);
+        }
+
     }
 
     public void saveLocation(String location) {
-        if(location.isEmpty()) {
+        if (location.isEmpty()) {
             return;
         }
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(location, location);
-        editor.commit();
+
+        if (preferences.getString(location, "") == null || preferences.getString(location, "").isEmpty()) {
+            saveData(location, "");
+        }
     }
 
     public List<Location> getAllLocation() {
         List<Location> locations = new ArrayList<Location>();
         Map<String, ?> allLocation;
         allLocation = preferences.getAll();
-        for(Map.Entry<String, ?> entry : allLocation.entrySet()) {
+        for (Map.Entry<String, ?> entry : allLocation.entrySet()) {
             Location location = new Location();
-            location.setLocationName(entry.getValue().toString());
-            Log.i("Location ", entry.getValue().toString());
+            location.setLocationName(entry.getKey().toString());
+            Log.i("Location ", entry.getKey().toString());
             locations.add(location);
         }
         return locations;
+    }
+
+    public List<Map<String, Object>> getRestaurantByLocation(String location) {
+        List<Restaurant> restaurants = null;
+        String restaurantJson = preferences.getString(location, "");
+        restaurants = convertJsonToRestaurantList(restaurantJson);
+        List<Map<String, Object>> restaurantInfoList = convertRestaurantInfoToAdapterFormat(restaurants);
+        return restaurantInfoList;
     }
 
     public File createImageFile() throws IOException {
@@ -81,5 +103,59 @@ public class Model {
         );
 
         return image;
+    }
+
+    public void saveRestaurant(Restaurant restaurant) {
+        List<Restaurant> restaurants = null;
+        String restaurantsJson = "";
+        restaurantsJson = preferences.getString(restaurant.getLocation(), "");
+        restaurants = convertJsonToRestaurantList(restaurantsJson);
+        if (restaurants == null) {
+            restaurants = new ArrayList<Restaurant>();
+        }
+
+        restaurants.add(restaurant);
+        restaurantsJson = convertObjectToJson(restaurants);
+        saveData(restaurant.getLocation(), restaurantsJson);
+    }
+
+    private List<Map<String, Object>> convertRestaurantInfoToAdapterFormat(List<Restaurant> restaurants) {
+        if(restaurants == null) {
+            return null;
+        }
+
+        List<Map<String, Object>> adapter = new ArrayList<Map<String, Object>>();
+        for (Restaurant restaurant : restaurants) {
+            if(!restaurant.getRestaurantPhotoPath().isEmpty()) {
+                Map<String, Object> tmpRestaurantInfo = new TreeMap<String, Object>();
+                tmpRestaurantInfo.put(Restaurant.NAME, restaurant.getRestaurantName());
+                tmpRestaurantInfo.put(Restaurant.PHOTO_PATH, restaurant.getRestaurantPhotoPath());
+                adapter.add(tmpRestaurantInfo);
+            }
+        }
+
+        return adapter;
+    }
+
+    private List<Restaurant> convertJsonToRestaurantList(String json) {
+        List<Restaurant> restaurants = null;
+        Gson gson = new Gson();
+        if (!json.isEmpty()) {
+            Type type = new TypeToken<List<Restaurant>>() {
+            }.getType();
+            restaurants = gson.fromJson(json, type);
+        }
+        return restaurants;
+    }
+
+    private String convertObjectToJson(Object object) {
+        Gson gson = new Gson();
+        return gson.toJson(object);
+    }
+
+    private void saveData(String key, String value) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(key, value);
+        editor.commit();
     }
 }

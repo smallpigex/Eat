@@ -8,12 +8,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+
+import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
+
 import android.widget.TextView;
 
+import java.util.List;
+import java.util.Map;
 
+
+
+import com.smallpigex.eat.com.whatwouldyoulike.model.Restaurant;
 import com.smallpigex.eat.dummy.DummyContent;
 
 /**
@@ -29,12 +35,11 @@ public class RestaurantFragment extends Fragment implements AbsListView.OnItemCl
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String CURRENT_LOCATION = "Location";
+    private static final String RESTAURANTS = "Restaurants";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String selectLocation;
 
     private OnFragmentInteractionListener mListener;
 
@@ -47,14 +52,13 @@ public class RestaurantFragment extends Fragment implements AbsListView.OnItemCl
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
-    private ListAdapter mAdapter;
+    private BaseAdapter mAdapter;
 
     // TODO: Rename and change types of parameters
-    public static RestaurantFragment newInstance(String param1, String param2) {
+    public static RestaurantFragment newInstance(String location) {
         RestaurantFragment fragment = new RestaurantFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(CURRENT_LOCATION, location);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,14 +75,15 @@ public class RestaurantFragment extends Fragment implements AbsListView.OnItemCl
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            selectLocation = getArguments().getString(CURRENT_LOCATION);
         }
 
+       List<Map<String, Object>> restaurants = ((MainActivity) getActivity()).model.getRestaurantByLocation(selectLocation);
 
-        // TODO: Change Adapter to display your content
-        mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
+       if(restaurants != null) {
+           mAdapter = new RestaurantAdapter(getActivity(), restaurants);
+       }
+
     }
 
     @Override
@@ -87,14 +92,19 @@ public class RestaurantFragment extends Fragment implements AbsListView.OnItemCl
         View view = inflater.inflate(R.layout.fragment_item, container, false);
 
         // Set the adapter
-        mListView = (AbsListView) view.findViewById(android.R.id.list);
-        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
-
-        // Set OnItemClickListener so we can be notified on item clicks
-        mListView.setOnItemClickListener(this);
+        if(mAdapter != null) {
+            mListView = (AbsListView) view.findViewById(android.R.id.list);
+            mListView.setAdapter(mAdapter);
+            // Set OnItemClickListener so we can be notified on item clicks
+            mListView.setOnItemClickListener(this);
+        } else {
+            TextView noRestaurantView = (TextView) view.findViewById(R.id.noAddRestaurantView);
+            noRestaurantView.setText("There aren't  any restaurants.");
+        }
 
         Button addRestaurantButton = (Button) view.findViewById(R.id.addRestaurant);
         addRestaurantButton.setOnClickListener(this);
+        mListener = (OnFragmentInteractionListener) getActivity();
         return view;
     }
 
@@ -102,7 +112,7 @@ public class RestaurantFragment extends Fragment implements AbsListView.OnItemCl
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+           //mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -120,7 +130,7 @@ public class RestaurantFragment extends Fragment implements AbsListView.OnItemCl
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+            //mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
         }
     }
 
@@ -140,6 +150,7 @@ public class RestaurantFragment extends Fragment implements AbsListView.OnItemCl
     @Override
     public void onClick(View v) {
         //show add restaurant fragment?
+        mListener.showAddRestaurantFragment(selectLocation);
     }
 
     /**
@@ -155,6 +166,8 @@ public class RestaurantFragment extends Fragment implements AbsListView.OnItemCl
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(String id);
+
+        public void showAddRestaurantFragment(String location);
     }
 
 }
