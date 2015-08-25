@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -19,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.smallpigex.eat.com.eating.util.Consts;
+import com.smallpigex.eat.com.eating.util.ImageManagement;
 import com.smallpigex.eat.com.whatwouldyoulike.model.Restaurant;
 
 import java.io.File;
@@ -143,6 +143,7 @@ public class AddRestaurantFragment extends Fragment implements View.OnClickListe
                 mCurrentPhotoPath = photoFile.getAbsolutePath();
                 Log.i(Consts.LOG_TAG, "The Path of Photo is " + mCurrentPhotoPath);
             } catch (IOException ex) {
+                Toast.makeText(getActivity(), "The Camera is busy, please close camera.", Toast.LENGTH_LONG).show();
                 Log.d(Consts.EXCEPTION_TAG, "IOException " + ex.getMessage());
             }
             // Continue only if the File was successfully created
@@ -183,17 +184,8 @@ public class AddRestaurantFragment extends Fragment implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_TAKE_CODE) {
             if(resultCode == getActivity().RESULT_OK) {
-                File file = new File(mCurrentPhotoPath);
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                final int REQUIRED_SIZE = 200;
-                int scale = 1;
-                while (options.outWidth / scale / 2 >= REQUIRED_SIZE
-                        && options.outHeight / scale / 2 >= REQUIRED_SIZE)
-                    scale *= 2;
-                options.inSampleSize = scale;
-                options.inJustDecodeBounds = false;
-                Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, options);
+                ImageManagement im = new ImageManagement();
+                Bitmap bitmap = im.decodeFile(mCurrentPhotoPath);
                 imageView.setImageBitmap(bitmap);
             } else if(resultCode == getActivity().RESULT_CANCELED) {
                 Toast.makeText(getActivity(), "User cancel that take a photo",

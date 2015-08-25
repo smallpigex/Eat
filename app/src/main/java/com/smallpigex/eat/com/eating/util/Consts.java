@@ -9,5 +9,6 @@ public final class Consts {
     public static final String ADD_RESTAURANT_FRAGMENT = "AddRestaurantFragment";
     public static final String PREFS_NAME = "MyPrefsFile";
     public static final String LOG_TAG = "Eating: ";
+    public static final String LOG_DEBUG_TAG = "Debug log: ";
     public static final String EXCEPTION_TAG = "Eating Exception: ";
 }

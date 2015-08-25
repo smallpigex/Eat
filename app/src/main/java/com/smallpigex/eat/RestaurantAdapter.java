@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.smallpigex.eat.com.eating.util.Consts;
+import com.smallpigex.eat.com.eating.util.ImageManagement;
 import com.smallpigex.eat.com.whatwouldyoulike.model.Restaurant;
 
 /**
@@ -61,20 +62,11 @@ public class RestaurantAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        /*
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        final int REQUIRED_SIZE = 200;
-        int scale = 1;
-        while (options.outWidth / scale / 2 >= REQUIRED_SIZE
-                && options.outHeight / scale / 2 >= REQUIRED_SIZE)
-            scale *= 2;
-        options.inSampleSize = scale;
-        options.inJustDecodeBounds = false;
-        Log.d(Consts.LOG_TAG, "image path is " + data.get(position).get(Restaurant.PHOTO_PATH).toString());
-        Bitmap bitmap = BitmapFactory.decodeFile(data.get(position).get(Restaurant.PHOTO_PATH).toString(), options);
-        holder.imageView.setImageBitmap(bitmap);*/
-        holder.imageView.setImageURI(Uri.parse(new File(data.get(position).get(Restaurant.PHOTO_PATH).toString()).toString()));
+
+        ImageManagement im = new ImageManagement();
+        Bitmap bitmap = im.decodeFile(data.get(position).get(Restaurant.PHOTO_PATH).toString());
+        holder.imageView.setImageBitmap(bitmap);
+       // holder.imageView.setImageURI(Uri.parse(new File(data.get(position).get(Restaurant.PHOTO_PATH).toString()).toString()));
         Log.d(Consts.LOG_TAG, "The Restaurant is " + data.get(position).get(Restaurant.NAME).toString());
         holder.nameView.setText(data.get(position).get(Restaurant.NAME).toString());
 

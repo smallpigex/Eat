@@ -1,16 +1,18 @@
 package com.smallpigex.eat.com.whatwouldyoulike.model;
 
 import android.content.SharedPreferences;
+
 import android.os.Environment;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.internal.LinkedHashTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.smallpigex.eat.com.eating.util.Consts;
 
 import java.io.File;
+
 import java.io.IOException;
+
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,6 +34,10 @@ public class Model {
     public Model(SharedPreferences preferences) {
         this.preferences = preferences;
         initAppInformation();
+    }
+
+    public Model() {
+
     }
 
     public void initAppInformation() {
@@ -158,4 +164,6 @@ public class Model {
         editor.putString(key, value);
         editor.commit();
     }
+
+
 }
