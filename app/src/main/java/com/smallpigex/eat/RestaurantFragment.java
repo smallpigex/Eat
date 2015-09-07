@@ -1,26 +1,19 @@
 package com.smallpigex.eat;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-
 import android.widget.BaseAdapter;
 import android.widget.Button;
-
 import android.widget.TextView;
 
 import java.util.List;
 import java.util.Map;
-
-
-
-import com.smallpigex.eat.com.whatwouldyoulike.model.Restaurant;
-import com.smallpigex.eat.dummy.DummyContent;
 
 /**
  * A fragment representing a list of Items.

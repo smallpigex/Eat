@@ -1,9 +1,13 @@
 package com.smallpigex.eat.com.whatwouldyoulike.model;
 
+import java.io.Serializable;
+
 /**
  * Created by smallpigex on 2015/7/26.
  */
-public class Restaurant {
+public class Restaurant implements Serializable {
+    private static final long serialVersionUID = -7060210544600464481L;
+
     public static final String LOCATION = "location";
     public static final String NAME = "RestaurantName";
     public static final String ADDRESS = "RestaurantAddress";
@@ -12,7 +16,7 @@ public class Restaurant {
 
     private String location = "";
     private String restaurantName = "";
-    private String restaurantAddress = "";
+    private String restaurantLocation = "";
     private String restaurantComment = "";
     private String restaurantPhotoPath = "";
 
@@ -24,12 +28,12 @@ public class Restaurant {
         this.restaurantName = restaurantName;
     }
 
-    public String getRestaurantAddress() {
-        return restaurantAddress;
+    public String getRestaurantLocation() {
+        return restaurantLocation;
     }
 
-    public void setRestaurantAddress(String restaurantAddress) {
-        this.restaurantAddress = restaurantAddress;
+    public void setRestaurantLocation(String restaurantLocation) {
+        this.restaurantLocation = restaurantLocation;
     }
 
     public String getRestaurantComment() {

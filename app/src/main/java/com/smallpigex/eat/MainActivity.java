@@ -1,5 +1,7 @@
 package com.smallpigex.eat;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -8,14 +10,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-
 import com.smallpigex.eat.com.eating.util.Consts;
 import com.smallpigex.eat.com.whatwouldyoulike.model.Model;
 import com.smallpigex.eat.com.whatwouldyoulike.model.Restaurant;
+import com.smallpigex.eat.com.whatwouldyoulike.model.SlotMachine;
+import com.smallpigex.eat.dummy.TestingViewerActivity;
+
+import java.util.Map;
 
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, LocationFragment.OnFragmentInteractionListener, RestaurantFragment.OnFragmentInteractionListener, AddRestaurantFragment.SaveRestaurantInformation {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, LocationFragment.OnFragmentInteractionListener,
+        RestaurantFragment.OnFragmentInteractionListener, AddRestaurantFragment.SaveRestaurantInformation, SlotMachineFragment.OnFragmentInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -58,8 +64,18 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        android.app.Fragment fragment = FragmentFactory.newInstance(position);
-        addFragment(fragment, Consts.LOCATION_FRAGMENT);
+       switch (position) {
+           case 0:
+               android.app.Fragment fragment = FragmentFactory.newInstance(position);
+               addFragment(fragment, Consts.LOCATION_FRAGMENT);
+               break;
+           case 1:
+               showRestaurantInfo(Uri.parse("66"));
+               break;
+
+           default:
+               break;
+       }
     }
 
     public void onSectionAttached(int number) {
@@ -150,5 +166,18 @@ public class MainActivity extends ActionBarActivity
         fragmentTransaction.replace(R.id.container, fragment, fragmentTag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void showRestaurantInfo(Uri uri) {
+        String region = uri.toString();
+        Restaurant restaurantInfo = model.putSlotMachineButton(region);
+        startRestaurantInfoActivity(restaurantInfo);
+    }
+
+    public void startRestaurantInfoActivity(Restaurant restaurantInfo) {
+        Intent intent = new Intent(this, TestingViewerActivity.class);
+        intent.putExtra(Consts.RESTAURANT_INFORMATION, restaurantInfo);
+        startActivity(intent);
     }
 }

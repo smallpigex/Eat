@@ -1,5 +1,6 @@
 package com.smallpigex.eat.com.whatwouldyoulike.model;
-import  java.util.List;
+
+import java.util.List;
 /**
  * Created by smallpigex on 2015/7/18.
  */

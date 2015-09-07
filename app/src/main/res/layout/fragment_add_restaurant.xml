@@ -61,14 +61,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/restaurant_address"
+                    android:text="@string/restaurant_location"
                     android:id="@+id/address_view"
                     android:textSize="22dp" />
 
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/restaurantAddress"/>
+                    android:id="@+id/restaurantLocation"/>
 
                 <TextView
                     android:layout_width="wrap_content"

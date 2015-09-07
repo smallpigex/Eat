@@ -1,7 +1,7 @@
 package com.smallpigex.eat.com.whatwouldyoulike.model;
 
 import android.content.SharedPreferences;
-
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.util.Log;
 
@@ -10,9 +10,9 @@ import com.google.gson.reflect.TypeToken;
 import com.smallpigex.eat.com.eating.util.Consts;
 
 import java.io.File;
-
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +30,7 @@ public class Model {
     private String imageFolderPath = "";
     private SharedPreferences preferences = null;
     private File storageDir = null;
+    private SQLiteDatabase db;
 
     public Model(SharedPreferences preferences) {
         this.preferences = preferences;
@@ -49,11 +50,6 @@ public class Model {
     }
 
     private void createPhotoFolder() {
-       /* for (File childFile : storageDir.listFiles()) {
-            if (childFile.getName().equals(IMAGE_FOLDER)) {
-                return;
-            }
-        }*/
         File imageFolder = new File(imageFolderPath);
         if(!imageFolder.exists()) {
             imageFolder.mkdir();
@@ -165,5 +161,32 @@ public class Model {
         editor.commit();
     }
 
+    public void saveRestaurantToDB(Restaurant restaurant) {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(restaurant.getRestaurantPhotoPath());
+            byte[] image = new byte[fileInputStream.available()];
 
+        } catch (FileNotFoundException e) {
+            Log.d(Consts.EXCEPTION_TAG, e.getMessage());
+            e.printStackTrace();
+        } catch (IOException e) {
+            Log.d(Consts.EXCEPTION_TAG, e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    //隨機挑選指定區域的餐廳
+    public Restaurant putSlotMachineButton(String region) {
+        List<Restaurant> restaurants = null;
+        String restaurantJson = preferences.getString(region, "");
+        restaurants = convertJsonToRestaurantList(restaurantJson);
+        SlotMachine sm = new SlotMachine();
+
+        int number = sm.getRandomNumber(restaurants.size());
+
+        Restaurant restaurantInfo = restaurants.get(number);
+        Log.d(Consts.LOG_DEBUG_TAG, "The restaurant object is " + restaurantInfo);
+        Log.d(Consts.LOG_DEBUG_TAG, "The number is " + number);
+        return restaurantInfo;
+    }
 }

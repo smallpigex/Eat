@@ -157,7 +157,7 @@ public class AddRestaurantFragment extends Fragment implements View.OnClickListe
 
     private void saveRestaurantInformationCommand() {
         TextView restaurantView = (EditText)getView().findViewById(R.id.restaurantName);
-        TextView AddressView = (EditText)getView().findViewById(R.id.restaurantAddress);
+        TextView AddressView = (EditText)getView().findViewById(R.id.restaurantLocation);
         TextView commentView = (EditText)getView().findViewById(R.id.restaurantComment);
 
         String restaurantName = restaurantView.getText().toString();
@@ -167,7 +167,7 @@ public class AddRestaurantFragment extends Fragment implements View.OnClickListe
         Restaurant restaurant = new Restaurant();
         restaurant.setLocation(mLocation);
         restaurant.setRestaurantName(restaurantName);
-        restaurant.setRestaurantAddress(restaurantAddress);
+        restaurant.setRestaurantLocation(restaurantAddress);
         restaurant.setRestaurantComment(restaurantComment);
         if(!mCurrentPhotoPath.isEmpty()) {
             restaurant.setRestaurantPhotoPath(mCurrentPhotoPath);

@@ -1,28 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <ImageView
-        android:layout_width="400dp"
-        android:layout_height="250dp"
-        android:scaleType="center"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="200dip"
+        >
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/restaurantImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:id="@+id/restaurantImageView"
-        android:src="@drawable/test_photo1"/>
+        android:padding="10dip"
+        android:src="@drawable/test_photo1"
+        android:scaleType="center"
+        app:riv_corner_radius="30dip"
+        app:riv_border_width="3dip"
+        app:riv_oval="false"
+        app:riv_border_color="@color/border"
+        />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:textSize="26dp"
         android:id="@+id/restaurantNameView"
-        android:layout_marginBottom="10dip"
-        android:layout_gravity="center_horizontal|bottom"
-        android:background="#AA000000"
-        android:textColor="#ffffffff"
-        android:gravity="center_horizontal" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="36dp"
+        android:layout_marginLeft="36dp"
+        android:layout_marginStart="36dp"
+        android:layout_alignBottom="@+id/restaurantImageView"
+        android:layout_alignLeft="@+id/restaurantImageView"
+        android:layout_alignStart="@+id/restaurantImageView"
+        android:background="#7f000000"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textAppearance="?android:attr/textAppearanceLargeInverse"
+        android:text="New Text"
+        android:textSize="22dp" />
+
+    </RelativeLayout>
 </merge>

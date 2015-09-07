@@ -2,8 +2,6 @@ package com.smallpigex.eat;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,13 +10,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-
 import com.smallpigex.eat.com.eating.util.Consts;
 import com.smallpigex.eat.com.eating.util.ImageManagement;
 import com.smallpigex.eat.com.whatwouldyoulike.model.Restaurant;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by smallpigex on 2015/8/18.
