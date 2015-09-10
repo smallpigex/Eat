@@ -69,7 +69,6 @@ public class SlotMachineFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        region = "66";
         onButtonPressed(Uri.parse(region));
     }
 

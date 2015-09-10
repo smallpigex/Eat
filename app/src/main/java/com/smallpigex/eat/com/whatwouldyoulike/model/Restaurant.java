@@ -8,13 +8,13 @@ import java.io.Serializable;
 public class Restaurant implements Serializable {
     private static final long serialVersionUID = -7060210544600464481L;
 
-    public static final String LOCATION = "location";
-    public static final String NAME = "RestaurantName";
-    public static final String ADDRESS = "RestaurantAddress";
-    public static final String COMMENT = "RestaurantComment";
+    public static final String REGION = "Region";
+    public static final String NAME = "Name";
+    public static final String Location = "Location";
+    public static final String COMMENT = "Comment";
     public static final String PHOTO_PATH = "PhotoPath";
 
-    private String location = "";
+    private String region = "";
     private String restaurantName = "";
     private String restaurantLocation = "";
     private String restaurantComment = "";
@@ -52,11 +52,11 @@ public class Restaurant implements Serializable {
         this.restaurantPhotoPath = restaurantPhotoPath;
     }
 
-    public String getLocation() {
-        return location;
+    public String getRegion() {
+        return region;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setRegion(String region) {
+        this.region = region;
     }
 }

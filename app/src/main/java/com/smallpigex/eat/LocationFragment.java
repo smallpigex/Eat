@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.smallpigex.eat.com.whatwouldyoulike.model.Location;
 
 import java.util.List;
@@ -32,12 +33,10 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String IS_SLOTMACHINE_STATE = "state";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private boolean isSlotMachineState;
     private List<Location> locations;
     private OnFragmentInteractionListener mListener;
 
@@ -53,11 +52,10 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
     private ListAdapter mAdapter;
 
     // TODO: Rename and change types of parameters
-    public static LocationFragment newInstance(String param1, String param2) {
+    public static LocationFragment newInstance(boolean isSlotMachineState) {
         LocationFragment fragment = new LocationFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putBoolean(IS_SLOTMACHINE_STATE, isSlotMachineState);
         fragment.setArguments(args);
         return fragment;
     }
@@ -74,8 +72,7 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            isSlotMachineState = getArguments().getBoolean(IS_SLOTMACHINE_STATE);
         }
         locations = MainActivity.model.getAllLocation();
         // TODO: Change Adapter to display your content
@@ -92,11 +89,19 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
         mListView = (AbsListView) view.findViewById(android.R.id.list);
         ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
+        if(mListView.getCount() == 0){
+            TextView noRestaurantView = (TextView) view.findViewById(R.id.noLocation);
+            noRestaurantView.setText("Please add some location.");
+        }
         // Set OnItemClickListener so we can be notified on item clicks
+        FloatingActionButton button = (FloatingActionButton) view.findViewById(R.id.addLocation);
         mListView.setOnItemClickListener(this);
+        if(!isSlotMachineState) {
+            button.setOnClickListener(this);
+        } else {
+            button.setVisibility(View.INVISIBLE);
+        }
 
-        Button button = (Button) view.findViewById(R.id.addLocation);
-        button.setOnClickListener(this);
         return view;
     }
 
@@ -133,7 +138,7 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
             Log.i("Click location ", locations.get(position).getLocationName());
-           mListener.onFragmentInteraction(locations.get(position).getLocationName());
+           mListener.onFragmentInteraction(locations.get(position).getLocationName(), isSlotMachineState);
         }
     }
 
@@ -173,7 +178,7 @@ public class LocationFragment extends Fragment implements AbsListView.OnItemClic
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(String id);
+        public void onFragmentInteraction(String id, boolean state);
     }
 
 }

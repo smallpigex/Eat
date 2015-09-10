@@ -6,6 +6,7 @@ package com.smallpigex.eat.com.eating.util;
 public final class Consts {
     public static final String LOCATION_FRAGMENT = "LocationFragment";
     public static final String RESTAURANT_FRAGMENT = "RestaurantFragment";
+    public static final String SLOTMACHINE_FRAGMENT = "SlotMachineFragment";
     public static final String ADD_RESTAURANT_FRAGMENT = "AddRestaurantFragment";
     public static final String RESTAURANT_INFORMATION = "restaurantInfomation";
     public static final String PREFS_NAME = "MyPrefsFile";

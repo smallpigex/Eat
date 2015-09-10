@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.smallpigex.eat.com.eating.util.Consts;
-import com.smallpigex.eat.com.eating.util.ImageManagement;
+import com.smallpigex.eat.com.whatwouldyoulike.model.ImageManagement;
 import com.smallpigex.eat.com.whatwouldyoulike.model.Restaurant;
 
 import java.io.File;
@@ -157,17 +157,17 @@ public class AddRestaurantFragment extends Fragment implements View.OnClickListe
 
     private void saveRestaurantInformationCommand() {
         TextView restaurantView = (EditText)getView().findViewById(R.id.restaurantName);
-        TextView AddressView = (EditText)getView().findViewById(R.id.restaurantLocation);
+        TextView locationView = (EditText)getView().findViewById(R.id.restaurantLocation);
         TextView commentView = (EditText)getView().findViewById(R.id.restaurantComment);
 
         String restaurantName = restaurantView.getText().toString();
-        String restaurantAddress = AddressView.getText().toString();
+        String restaurantLocation = locationView.getText().toString();
         String restaurantComment = commentView.getText().toString();
 
         Restaurant restaurant = new Restaurant();
-        restaurant.setLocation(mLocation);
+        restaurant.setRegion(mLocation);
         restaurant.setRestaurantName(restaurantName);
-        restaurant.setRestaurantLocation(restaurantAddress);
+        restaurant.setRestaurantLocation(restaurantLocation);
         restaurant.setRestaurantComment(restaurantComment);
         if(!mCurrentPhotoPath.isEmpty()) {
             restaurant.setRestaurantPhotoPath(mCurrentPhotoPath);
@@ -184,8 +184,7 @@ public class AddRestaurantFragment extends Fragment implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_TAKE_CODE) {
             if(resultCode == getActivity().RESULT_OK) {
-                ImageManagement im = new ImageManagement();
-                Bitmap bitmap = im.decodeFile(mCurrentPhotoPath);
+                Bitmap bitmap = ImageManagement.decodeFile(mCurrentPhotoPath, 1);
                 imageView.setImageBitmap(bitmap);
             } else if(resultCode == getActivity().RESULT_CANCELED) {
                 Toast.makeText(getActivity(), "User cancel that take a photo",

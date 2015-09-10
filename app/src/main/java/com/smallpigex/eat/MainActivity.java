@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.smallpigex.eat.com.eating.util.Consts;
+import com.smallpigex.eat.com.eating.util.Convertor;
 import com.smallpigex.eat.com.whatwouldyoulike.model.Model;
 import com.smallpigex.eat.com.whatwouldyoulike.model.Restaurant;
 import com.smallpigex.eat.com.whatwouldyoulike.model.SlotMachine;
@@ -63,17 +64,21 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
+        android.app.Fragment fragment;
         // update the main content by replacing fragments
        switch (position) {
            case 0:
-               android.app.Fragment fragment = FragmentFactory.newInstance(position);
+               fragment = FragmentFactory.newInstance(position);
                addFragment(fragment, Consts.LOCATION_FRAGMENT);
                break;
            case 1:
-               showRestaurantInfo(Uri.parse("66"));
+               fragment = FragmentFactory.newInstance(position);
+               addFragment(fragment, Consts.LOCATION_FRAGMENT);
                break;
 
            default:
+               Intent intent = new Intent(this, RestaurantViewPager.class);
+               startActivity(intent);
                break;
        }
     }
@@ -142,11 +147,22 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
-    public void onFragmentInteraction(String id) {
+    public void onFragmentInteraction(String id, boolean isSlotMachineState) {
         Log.i("click Item ", id);
         //new restaurant list page
-        android.app.Fragment restaurantFragment = RestaurantFragment.newInstance(id);
-        addFragment(restaurantFragment, Consts.RESTAURANT_FRAGMENT);
+        if(!isSlotMachineState) {
+            android.app.Fragment restaurantFragment = RestaurantFragment.newInstance(id);
+            addFragment(restaurantFragment, Consts.RESTAURANT_FRAGMENT);
+        } else {
+            android.app.Fragment slotMachineFragment = SlotMachineFragment.newInstance(id);
+            addFragment(slotMachineFragment, Consts.SLOTMACHINE_FRAGMENT);
+        }
+    }
+
+    @Override
+    public void showRestaurantDetail(Map<String, Object> objectMap) {
+        Restaurant restaurantInfo = Convertor.convertMapToRestaurantObject(objectMap);
+        startRestaurantInfoActivity(restaurantInfo);
     }
 
     @Override
@@ -176,7 +192,7 @@ public class MainActivity extends ActionBarActivity
     }
 
     public void startRestaurantInfoActivity(Restaurant restaurantInfo) {
-        Intent intent = new Intent(this, TestingViewerActivity.class);
+        Intent intent = new Intent(this, RestaurantDetailActivity.class);
         intent.putExtra(Consts.RESTAURANT_INFORMATION, restaurantInfo);
         startActivity(intent);
     }

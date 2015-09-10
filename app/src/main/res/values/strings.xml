@@ -8,7 +8,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_example">Example action</string>
+    <string name="action_example">Prototype</string>
 
     <string name="action_settings">Settings</string>
 
@@ -29,9 +29,11 @@
     <string name="take_photo">Take a photo</string>
     <string name="title_activity_restaurant_view_pager">Restaurants</string>
 
+    <string name="no_restaurant">此地區沒有餐廳喔!!</string>
     <string name="hello_world">Hello world!</string>
     <string name="testing_long_string">AaaabbbbdddbdsdfsdAaaabbbbdddbdsdfsdAaaabbbbdddbdsdfsdAaaabbbbdddbdsdfsdAaaabbbbdddbdsdfsd</string>
     <string name="testing_location">台北市大安區忠孝東路四段248巷3號</string>
     <string name="title_activity_testing_viewer">TestingViewerActivity</string>
-    <string name="slot_machine_button_text">拉</string>
+    <string name="slot_machine_button_text">PRESS!</string>
+    <string name="title_restaurant_detail">Restaurant Detail</string>
 </resources>

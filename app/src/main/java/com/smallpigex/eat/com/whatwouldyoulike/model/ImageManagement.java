@@ -1,8 +1,10 @@
-package com.smallpigex.eat.com.eating.util;
+package com.smallpigex.eat.com.whatwouldyoulike.model;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+
+import com.smallpigex.eat.com.eating.util.Consts;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,12 +16,12 @@ import java.io.InputStream;
  */
 public class ImageManagement {
 
-    public Bitmap decodeFile(String filePath) {
+    public static Bitmap decodeFile(String filePath, int sampleSize) {
         Bitmap bitmap = null;
         try {
             InputStream inputStreamFile = new FileInputStream(new File(filePath));
             BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 2;
+            options.inSampleSize = sampleSize;
             bitmap = BitmapFactory.decodeStream(inputStreamFile, null, options);
         } catch (FileNotFoundException e) {
             Log.d(Consts.EXCEPTION_TAG, e.getMessage());

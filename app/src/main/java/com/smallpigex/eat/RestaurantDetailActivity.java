@@ -1,7 +1,6 @@
-package com.smallpigex.eat.dummy;
+package com.smallpigex.eat;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -15,7 +14,7 @@ import com.smallpigex.eat.com.eating.util.Consts;
 import com.smallpigex.eat.com.whatwouldyoulike.model.ImageManagement;
 import com.smallpigex.eat.com.whatwouldyoulike.model.Restaurant;
 
-public class TestingViewerActivity extends ActionBarActivity {
+public class RestaurantDetailActivity extends ActionBarActivity {
     private ImageView imageView;
     private TextView name;
     private TextView location;
@@ -27,16 +26,20 @@ public class TestingViewerActivity extends ActionBarActivity {
         setContentView(R.layout.activity_restaurant_detail);
         Intent intent = getIntent();
         Restaurant restaurantInfo = (Restaurant) intent.getSerializableExtra(Consts.RESTAURANT_INFORMATION);
-        imageView = (ImageView) findViewById(R.id.imageView);
-        name = (TextView) findViewById(R.id.name);
-        location = (TextView) findViewById(R.id.location);
-        comment = (TextView) findViewById(R.id.comment);
-        Log.d(Consts.LOG_DEBUG_TAG, restaurantInfo.getRestaurantPhotoPath());
+        if(restaurantInfo != null) {
+            imageView = (ImageView) findViewById(R.id.imageView);
+            name = (TextView) findViewById(R.id.name);
 
-        name.setText(restaurantInfo.getRestaurantName());
-        location.setText(restaurantInfo.getRestaurantLocation());
-        comment.setText(restaurantInfo.getRestaurantComment());
-        imageView.setImageBitmap(ImageManagement.decodeFile(restaurantInfo.getRestaurantPhotoPath(), 2));
+            location = (TextView) findViewById(R.id.location);
+            comment = (TextView) findViewById(R.id.comment);
+            Log.d(Consts.LOG_DEBUG_TAG, restaurantInfo.getRestaurantPhotoPath());
+
+            name.setText(restaurantInfo.getRestaurantName());
+            Log.d(Consts.LOG_DEBUG_TAG, restaurantInfo.getRestaurantLocation());
+            location.setText(restaurantInfo.getRestaurantLocation());
+            comment.setText(restaurantInfo.getRestaurantComment());
+            imageView.setImageBitmap(ImageManagement.decodeFile(restaurantInfo.getRestaurantPhotoPath(), 2));
+        }
     }
 
     @Override

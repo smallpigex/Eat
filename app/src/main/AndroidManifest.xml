@@ -32,6 +32,10 @@
             android:name=".dummy.TestingViewerActivity"
             android:label="@string/title_activity_testing_viewer" >
         </activity>
+        <activity
+            android:name=".RestaurantDetailActivity"
+            android:label="@string/title_restaurant_detail" >
+        </activity>
     </application>
 
 </manifest>

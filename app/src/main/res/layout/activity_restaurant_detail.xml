@@ -4,11 +4,12 @@
     android:orientation="vertical">
 
     <ImageView
-        android:layout_width="501dp"
+        android:layout_width="match_parent"
         android:layout_height="196dp"
         android:id="@+id/imageView"
         android:src="@drawable/test_photo1"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:scaleType="centerCrop" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -39,19 +40,20 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/restaurant_name"
-                            android:id="@+id/nameTextView"
+                            android:id="@+id/tagTextView"
                             android:textSize="22sp"
                             android:textStyle="bold|italic" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="New Text"
-                            android:id="@+id/textView2"
+                            android:id="@+id/name"
                             android:autoText="false"
+                            android:text="@string/no_restaurant"
                             android:textStyle="normal"
                             android:textSize="18sp"
-                            android:layout_gravity="left" />
+                            android:layout_gravity="left"
+                            android:layout_marginLeft="10dp"/>
                     </LinearLayout>
 
                 </TableRow>
@@ -76,15 +78,16 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/testing_location"
-                            android:id="@+id/locationTextView"
+                            android:text="@string/no_restaurant"
+                            android:id="@+id/location"
                             android:autoText="false"
                             android:textStyle="normal"
                             android:textSize="18sp"
                             android:ellipsize="end"
                             android:maxLines="1"
                             android:singleLine="true"
-                            android:layout_gravity="left" />
+                            android:layout_gravity="left"
+                            android:layout_marginLeft="10dp"/>
 
                     </LinearLayout>
                 </TableRow>
@@ -109,15 +112,15 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/testing_long_string"
-                            android:id="@+id/commentTextView"
+                            android:text="@string/no_restaurant"
+                            android:id="@+id/comment"
                             android:autoText="false"
                             android:textStyle="normal"
                             android:textSize="18sp"
-                            android:layout_gravity="center"
-                            android:ellipsize="end"
+                            android:layout_gravity="left"
                             android:maxLines="1"
-                            android:singleLine="true"/>
+                            android:singleLine="false"
+                            android:layout_marginLeft="10dp"/>
 
                     </LinearLayout>
                 </TableRow>

@@ -1,18 +1,21 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.smallpigex.eat.AddRestaurantFragment"
-    android:nestedScrollingEnabled="false">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
 
 
     <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/scrollView" >
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -20,91 +23,136 @@
                 android:background="#ff8edcff">
 
                 <TextView
+                    android:id="@+id/locationTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/title_location"
-                    android:id="@+id/locationTextView"
-                    android:textSize="36dp"
                     android:layout_alignBottom="@+id/saveRestaurant"
-                    android:layout_alignParentTop="true" />
+                    android:layout_alignParentTop="true"
+                    android:text="@string/title_location"
+                    android:textSize="36dp" />
 
                 <Button
+                    android:id="@+id/saveRestaurant"
                     android:layout_width="67dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/save_restaurant"
-                    android:id="@+id/saveRestaurant"
-                    android:layout_gravity="right|top"
-                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="right|top"
+                    android:text="@string/save_restaurant" />
 
             </RelativeLayout>
 
-
-
             <TableLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:stretchColumns="0">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/restaurant_name"
-                    android:id="@+id/textView"
-                    android:textSize="22dp" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="1dip"
+                    android:background="#fbfcff">
 
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/restaurantName"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/restaurant_location"
-                    android:id="@+id/address_view"
-                    android:textSize="22dp" />
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/restaurant_name"
+                            android:textSize="22dp" />
 
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/restaurantLocation"/>
+                        <EditText
+                            android:id="@+id/restaurantName"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/restaurant_comment"
-                    android:id="@+id/restaurant_comment"
-                    android:textSize="22dp" />
+                    </LinearLayout>
+                </TableRow>
 
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/restaurantComment" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="1dip"
+                    android:background="#fbfcff">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/address_view"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/restaurant_location"
+                            android:textSize="22dp" />
+
+                        <EditText
+                            android:id="@+id/restaurantLocation"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="1dip"
+                    android:background="#fbfcff">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/restaurant_comment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/restaurant_comment"
+                            android:textSize="22dp" />
+
+                        <EditText
+                            android:id="@+id/restaurantComment"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+                </TableRow>
 
                 <ImageView
-                    android:layout_width="match_parent"
+                    android:id="@+id/restaurantPhotoView"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/restaurantPhotoView" />
+                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="true" />
 
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
                     <Button
+                        android:id="@+id/takePhoto"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/take_photo"
-                        android:id="@+id/takePhoto"
-                        android:layout_column="0" />
+                        android:layout_column="0"
+                        android:text="@string/take_photo" />
                 </TableRow>
 
-            </TableLayout>
 
+
+            </TableLayout>
 
 
 
         </LinearLayout>
     </ScrollView>
 
-</FrameLayout>
+
+</LinearLayout>

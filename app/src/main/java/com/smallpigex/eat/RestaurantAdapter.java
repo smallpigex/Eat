@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.smallpigex.eat.com.eating.util.Consts;
-import com.smallpigex.eat.com.eating.util.ImageManagement;
+import com.smallpigex.eat.com.whatwouldyoulike.model.ImageManagement;
 import com.smallpigex.eat.com.whatwouldyoulike.model.Restaurant;
 
 import java.util.List;
@@ -60,10 +60,10 @@ public class RestaurantAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        ImageManagement im = new ImageManagement();
-        Bitmap bitmap = im.decodeFile(data.get(position).get(Restaurant.PHOTO_PATH).toString());
+        String photoPath = data.get(position).get(Restaurant.PHOTO_PATH).toString();
+        Log.d(Consts.LOG_TAG, "The Restaurant photo path is " + photoPath);
+        Bitmap bitmap = ImageManagement.decodeFile(photoPath, 8);
         holder.imageView.setImageBitmap(bitmap);
-       // holder.imageView.setImageURI(Uri.parse(new File(data.get(position).get(Restaurant.PHOTO_PATH).toString()).toString()));
         Log.d(Consts.LOG_TAG, "The Restaurant is " + data.get(position).get(Restaurant.NAME).toString());
         holder.nameView.setText(data.get(position).get(Restaurant.NAME).toString());
 

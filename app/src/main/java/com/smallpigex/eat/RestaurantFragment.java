@@ -9,8 +9,9 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.TextView;
+
+import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 import java.util.Map;
@@ -71,12 +72,7 @@ public class RestaurantFragment extends Fragment implements AbsListView.OnItemCl
             selectLocation = getArguments().getString(CURRENT_LOCATION);
         }
 
-       List<Map<String, Object>> restaurants = ((MainActivity) getActivity()).model.getRestaurantByLocation(selectLocation);
-
-       if(restaurants != null) {
-           mAdapter = new RestaurantAdapter(getActivity(), restaurants);
-       }
-
+        createNewAdapter();
     }
 
     @Override
@@ -85,27 +81,45 @@ public class RestaurantFragment extends Fragment implements AbsListView.OnItemCl
         View view = inflater.inflate(R.layout.fragment_item, container, false);
 
         // Set the adapter
-        if(mAdapter != null) {
+        if (mAdapter != null) {
+            if(isNewData()) {
+                createNewAdapter();
+            }
             mListView = (AbsListView) view.findViewById(android.R.id.list);
             mListView.setAdapter(mAdapter);
             // Set OnItemClickListener so we can be notified on item clicks
             mListView.setOnItemClickListener(this);
         } else {
-            TextView noRestaurantView = (TextView) view.findViewById(R.id.noAddRestaurantView);
+            TextView noRestaurantView = (TextView) view.findViewById(R.id.noRestaurantView);
             noRestaurantView.setText("There aren't  any restaurants.");
         }
 
-        Button addRestaurantButton = (Button) view.findViewById(R.id.addRestaurant);
+        FloatingActionButton addRestaurantButton = (FloatingActionButton) view.findViewById(R.id.addRestaurant);
         addRestaurantButton.setOnClickListener(this);
         mListener = (OnFragmentInteractionListener) getActivity();
         return view;
+    }
+
+    public void createNewAdapter() {
+        List<Map<String, Object>> restaurants = ((MainActivity) getActivity()).model.getRestaurantByLocation(selectLocation);
+        if (restaurants != null) {
+            mAdapter = new RestaurantAdapter(getActivity(), restaurants);
+        }
+    }
+
+    public boolean isNewData() {
+        int dataSize = ((MainActivity) getActivity()).model.getRestaurantByLocation(selectLocation).size();
+        if (dataSize > mAdapter.getCount()) {
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-           //mListener = (OnFragmentInteractionListener) activity;
+            //mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -123,8 +137,12 @@ public class RestaurantFragment extends Fragment implements AbsListView.OnItemCl
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            //mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+            Map<String, Object> objectMap = (Map<String, Object>) parent.getItemAtPosition(position);
+
+            mListener.showRestaurantDetail(objectMap);
         }
+
+
     }
 
     /**
@@ -158,7 +176,7 @@ public class RestaurantFragment extends Fragment implements AbsListView.OnItemCl
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(String id);
+        public void showRestaurantDetail(Map<String, Object> objectMap);
 
         public void showAddRestaurantFragment(String location);
     }

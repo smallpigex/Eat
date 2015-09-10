@@ -8,7 +8,9 @@ import android.app.Fragment;
 public class FragmentFactory {
     public static Fragment newInstance(int position) {
         if(position == 0) {
-            return new LocationFragment();
+            return LocationFragment.newInstance(false);
+        } else if(position == 1) {
+            return LocationFragment.newInstance(true);
         }
         return null;
     }

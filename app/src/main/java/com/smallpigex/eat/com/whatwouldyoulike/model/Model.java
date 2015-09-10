@@ -84,11 +84,17 @@ public class Model {
     }
 
     public List<Map<String, Object>> getRestaurantByLocation(String location) {
-        List<Restaurant> restaurants = null;
-        String restaurantJson = preferences.getString(location, "");
-        restaurants = convertJsonToRestaurantList(restaurantJson);
+        List<Restaurant> restaurants = getRestaurantList(location);
         List<Map<String, Object>> restaurantInfoList = convertRestaurantInfoToAdapterFormat(restaurants);
         return restaurantInfoList;
+    }
+
+    private List<Restaurant> getRestaurantList(String location) {
+        List<Restaurant> restaurants = null;
+        String restaurantJson = preferences.getString(location, "");
+        Log.d(Consts.LOG_DEBUG_TAG, "A restaurant Json = " + restaurantJson);
+        restaurants = convertJsonToRestaurantList(restaurantJson);
+        return  restaurants;
     }
 
     public File createImageFile() throws IOException {
@@ -110,7 +116,7 @@ public class Model {
     public void saveRestaurant(Restaurant restaurant) {
         List<Restaurant> restaurants = null;
         String restaurantsJson = "";
-        restaurantsJson = preferences.getString(restaurant.getLocation(), "");
+        restaurantsJson = preferences.getString(restaurant.getRegion(), "");
         restaurants = convertJsonToRestaurantList(restaurantsJson);
         if (restaurants == null) {
             restaurants = new ArrayList<Restaurant>();
@@ -118,7 +124,8 @@ public class Model {
 
         restaurants.add(restaurant);
         restaurantsJson = convertObjectToJson(restaurants);
-        saveData(restaurant.getLocation(), restaurantsJson);
+        Log.d(Consts.LOG_DEBUG_TAG, "Json = " + restaurantsJson);
+        saveData(restaurant.getRegion(), restaurantsJson);
     }
 
     private List<Map<String, Object>> convertRestaurantInfoToAdapterFormat(List<Restaurant> restaurants) {
@@ -131,6 +138,9 @@ public class Model {
             if(!restaurant.getRestaurantPhotoPath().isEmpty()) {
                 Map<String, Object> tmpRestaurantInfo = new TreeMap<String, Object>();
                 tmpRestaurantInfo.put(Restaurant.NAME, restaurant.getRestaurantName());
+                tmpRestaurantInfo.put(Restaurant.REGION, restaurant.getRegion());
+                tmpRestaurantInfo.put(Restaurant.Location, restaurant.getRestaurantLocation());
+                tmpRestaurantInfo.put(Restaurant.COMMENT, restaurant.getRestaurantComment());
                 tmpRestaurantInfo.put(Restaurant.PHOTO_PATH, restaurant.getRestaurantPhotoPath());
                 adapter.add(tmpRestaurantInfo);
             }
@@ -180,13 +190,15 @@ public class Model {
         List<Restaurant> restaurants = null;
         String restaurantJson = preferences.getString(region, "");
         restaurants = convertJsonToRestaurantList(restaurantJson);
+
         SlotMachine sm = new SlotMachine();
-
-        int number = sm.getRandomNumber(restaurants.size());
-
-        Restaurant restaurantInfo = restaurants.get(number);
+        Restaurant restaurantInfo = null;
+        if(restaurants != null) {
+            int number = sm.getRandomNumber(restaurants.size());
+            Log.d(Consts.LOG_DEBUG_TAG, "The number is " + number);
+            restaurantInfo = restaurants.get(number);
+        }
         Log.d(Consts.LOG_DEBUG_TAG, "The restaurant object is " + restaurantInfo);
-        Log.d(Consts.LOG_DEBUG_TAG, "The number is " + number);
         return restaurantInfo;
     }
 }
